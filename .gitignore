@@ -4,4 +4,4 @@
 # Include these files
 !.gitignore
 !*/
-!src/*
+!/src/**
