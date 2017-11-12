@@ -59,7 +59,7 @@ public class TestSortingStress extends BaseTest {
         }
     }
 
-    @Test(timeout = 2 * SECOND)
+    @Test(timeout = 10 * SECOND)
     public void stressTestTopKSort() {
 
         IList<String> input = new DoubleLinkedList<String>();
