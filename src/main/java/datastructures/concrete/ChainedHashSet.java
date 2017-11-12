@@ -1,11 +1,9 @@
 package datastructures.concrete;
 
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
-import datastructures.concrete.dictionaries.KVPair;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NoSuchKeyException;
-import misc.exceptions.NotYetImplementedException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -25,16 +23,14 @@ public class ChainedHashSet<T> implements ISet<T> {
     public void add(T item) {
         map.put(item, true);
     }
-    
-    
 
     @Override
     public void remove(T item) {
-    	try {
-    		map.remove(item);
-    	} catch(NoSuchKeyException exc) {
-    		throw new NoSuchElementException();
-    	}
+        try {
+            map.remove(item);
+        } catch (NoSuchKeyException exc) {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override

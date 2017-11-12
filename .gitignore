@@ -6,3 +6,4 @@
 !*/
 !/src/**
 /bin/
+/.gradle/
