@@ -18,7 +18,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
         return new ArrayHeap<>();
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testBasicSize() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         heap.insert(3);
