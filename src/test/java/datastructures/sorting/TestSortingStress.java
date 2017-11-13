@@ -85,7 +85,7 @@ public class TestSortingStress extends BaseTest {
             assertEquals(utilList.get(utilList.size() - (5000 - j)), output.get(j));
         }
 
-        output = Searcher.topKSort(10005, input);
+        output = Searcher.topKSort(15005, input);
         for (int j = 0; j < 10000; j++) {
             assertEquals(utilList.get(j), output.get(j));
         }
