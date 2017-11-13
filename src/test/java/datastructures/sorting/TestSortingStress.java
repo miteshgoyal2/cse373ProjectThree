@@ -106,4 +106,21 @@ public class TestSortingStress extends BaseTest {
         }
 
     }
+
+    @Test(timeout = 100 * SECOND)
+    public void stressTestTopKSort2() {
+        IList<Integer> input = new DoubleLinkedList<Integer>();
+        List<Integer> utilList = new ArrayList<Integer>();
+        for (int i = 0; i < 100000; i++) {
+            utilList.add(i);
+            input.add(i);
+        }
+
+        IList<Integer> output = new DoubleLinkedList<Integer>();
+        output = Searcher.topKSort(1, input);
+        for (int i = 0; i < 1; i++) {
+            assertEquals(utilList.get(99999), output.get(i));
+            assertEquals(1, output.size());
+        }
+    }
 }
