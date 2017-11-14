@@ -7,10 +7,8 @@ import misc.exceptions.NotYetImplementedException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
 /**
- * Note: For more info on the expected behavior of your methods, see
- * the source code for IList.
+ * Note: For more info on the expected behavior of your methods, see the source code for IList.
  */
 public class DoubleLinkedList<T> implements IList<T> {
     // You may not rename these fields or change their types.
@@ -28,148 +26,147 @@ public class DoubleLinkedList<T> implements IList<T> {
 
     @Override
     public void add(T item) {
-    	// empty case
+        // empty case
         if (size == 0) {
-        	front = new Node<T>(item);
-        	back = front;
-        } else {  // when list has elements
-        	back.next = new Node<T>(back, item, null);
-        	back = back.next;
+            front = new Node<T>(item);
+            back = front;
+        } else { // when list has elements
+            back.next = new Node<T>(back, item, null);
+            back = back.next;
         }
-        
+
         size++;
     }
 
     @Override
     public T remove() {
         if (size == 0)
-        	throw new EmptyContainerException();
-        
+            throw new EmptyContainerException();
+
         T elementRemoved = back.data;
         if (size == 1) {
-        	front = null;
-        	back = null;
+            front = null;
+            back = null;
         } else {
-        	back = back.prev;
-        	back.next = null;
+            back = back.prev;
+            back.next = null;
         }
         size--;
-        
+
         return elementRemoved;
-        
-        
+
     }
 
     @Override
     public T get(int index) {
-    	
-    	if (index >= size || index < 0)
-    		throw new IndexOutOfBoundsException();
-    	
-    	Node<T> temp = front;
+
+        if (index >= size || index < 0)
+            throw new IndexOutOfBoundsException();
+
+        Node<T> temp = front;
         for (int i = 0; i < index; i++) {
-        	temp = temp.next;
+            temp = temp.next;
         }
         return temp.data;
     }
 
     @Override
     public void set(int index, T item) {
-    	if (index >= size || index < 0)
-    		throw new IndexOutOfBoundsException();
-    	
-    	delete(index);
-    	insert(index, item);
-        
+        if (index >= size || index < 0)
+            throw new IndexOutOfBoundsException();
+
+        delete(index);
+        insert(index, item);
+
     }
 
     @Override
     public void insert(int index, T item) {
-    	if (index > size || index < 0)
-    		throw new IndexOutOfBoundsException();
-    	
-    	if (index == size) {
-    		// adding case
-    		add(item);
-    	} else {
-	    	if (index == 0) {
-	            // front case
-	        	Node<T> insertion = new Node<T>(item);
-	        	insertion.next = front;
-	       		front.prev = insertion;
-	        	front = insertion;
-	        } else {
-	        	// middle case
-	        	Node<T> temp;
-	        	if (index < size / 2) {
-		        	// index closer to front
-		        	temp = front;
-			        for (int i = 0; i < index; i++) {
-			        	temp = temp.next;
-			        }
-	        	} else {
-		        	// index closer to back
-			        temp = back;
-			        for (int i = 0; i < (size - 1) - index; i++) {
-			        	temp = temp.prev;
-			        }
-	        	}
-	
-	            Node<T> nodeBeforeInsertion = temp.prev;
-	            Node<T> nodeAfterInsertion = temp;
-	            Node<T> insertion = new Node<T>(nodeBeforeInsertion, item, nodeAfterInsertion);
-	            nodeBeforeInsertion.next = insertion;
-	            nodeAfterInsertion.prev = insertion;
-	        }
-	    	size++;
-    	}
+        if (index > size || index < 0)
+            throw new IndexOutOfBoundsException();
+
+        if (index == size) {
+            // adding case
+            add(item);
+        } else {
+            if (index == 0) {
+                // front case
+                Node<T> insertion = new Node<T>(item);
+                insertion.next = front;
+                front.prev = insertion;
+                front = insertion;
+            } else {
+                // middle case
+                Node<T> temp;
+                if (index < size / 2) {
+                    // index closer to front
+                    temp = front;
+                    for (int i = 0; i < index; i++) {
+                        temp = temp.next;
+                    }
+                } else {
+                    // index closer to back
+                    temp = back;
+                    for (int i = 0; i < (size - 1) - index; i++) {
+                        temp = temp.prev;
+                    }
+                }
+
+                Node<T> nodeBeforeInsertion = temp.prev;
+                Node<T> nodeAfterInsertion = temp;
+                Node<T> insertion = new Node<T>(nodeBeforeInsertion, item, nodeAfterInsertion);
+                nodeBeforeInsertion.next = insertion;
+                nodeAfterInsertion.prev = insertion;
+            }
+            size++;
+        }
     }
 
     @Override
     public T delete(int index) {
-    	if (index >= size || index < 0)
-    		throw new IndexOutOfBoundsException();
-    	T item;
-    	if (index == 0) {
+        if (index >= size || index < 0)
+            throw new IndexOutOfBoundsException();
+        T item;
+        if (index == 0) {
             // front case
-    		item = front.data;
-        	front = front.next;
-        	if (front != null)
-        		front.prev = null;
+            item = front.data;
+            front = front.next;
+            if (front != null)
+                front.prev = null;
         } else if (index == size - 1) {
-        	// end case
-        	item = back.data;
-        	back = back.prev;
-        	back.next = null;
+            // end case
+            item = back.data;
+            back = back.prev;
+            back.next = null;
         } else {
-        	// middle case
-	    	Node<T> temp = front;
-	        for (int i = 0; i < index; i++) {
-	        	temp = temp.next;
-	        }
-	        item = temp.data;
+            // middle case
+            Node<T> temp = front;
+            for (int i = 0; i < index; i++) {
+                temp = temp.next;
+            }
+            item = temp.data;
             Node<T> nodeBefore = temp.prev;
             Node<T> nodeAfter = temp.next;
             nodeBefore.next = nodeAfter;
             nodeAfter.prev = nodeBefore;
             temp = null;
         }
-    	size--;
-    	return item;
+        size--;
+        return item;
     }
 
     @Override
     public int indexOf(T item) {
         int index = -1;
-       
+
         Node<T> temp = front;
         for (int i = 0; i < size; i++) {
-	        	if (temp.data == null ? temp.data == item : temp.data.equals(item)) {
-	        		index = i;
-	        		return index;
-	        	}
-        	if (i != size - 1) // check for last element
-        		temp = temp.next;
+            if (temp.data == null ? temp.data == item : temp.data.equals(item)) {
+                index = i;
+                return index;
+            }
+            if (i != size - 1) // check for last element
+                temp = temp.next;
         }
         return index;
     }
@@ -183,13 +180,13 @@ public class DoubleLinkedList<T> implements IList<T> {
     public boolean contains(T other) {
         Node<T> temp = front;
         for (int i = 0; i < size; i++) {
-        	if (temp.data == null ? temp.data == other : temp.data.equals(other)) {
-        		return true;
-        	}
-        	if (i != size - 1) // check for last element
-        		temp = temp.next;
+            if (temp.data == null ? temp.data == other : temp.data.equals(other)) {
+                return true;
+            }
+            if (i != size - 1) // check for last element
+                temp = temp.next;
         }
-    	return false;
+        return false;
     }
 
     @Override
@@ -230,35 +227,33 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
 
         /**
-         * Returns 'true' if the iterator still has elements to look at;
-         * returns 'false' otherwise.
+         * Returns 'true' if the iterator still has elements to look at; returns 'false' otherwise.
          */
         public boolean hasNext() {
-        	return !(current == null);
+            return !(current == null);
         }
 
         /**
-         * Returns the next item in the iteration and internally updates the
-         * iterator to advance one element forward.
+         * Returns the next item in the iteration and internally updates the iterator to advance one element forward.
          *
-         * @throws NoSuchElementException if we have reached the end of the iteration and
-         *         there are no more elements to look at.
+         * @throws NoSuchElementException
+         *             if we have reached the end of the iteration and there are no more elements to look at.
          */
         public T next() {
-        	if (!hasNext())
-        		throw new NoSuchElementException();
+            if (!hasNext())
+                throw new NoSuchElementException();
             T data = current.data;
-        	current = current.next;
+            current = current.next;
             return data;
         }
-        
+
         public void remove() {
-        	Node<T> nodeBefore = current.prev;
-        	Node<T> nodeAfter = current.next;
-        	current = current.next;
-        	nodeBefore.next = nodeAfter;
-        	nodeAfter.prev = nodeBefore;
-        	
+            Node<T> nodeBefore = current.prev;
+            Node<T> nodeAfter = current.next;
+            current = current.next;
+            nodeBefore.next = nodeAfter;
+            nodeAfter.prev = nodeBefore;
+
         }
     }
 }

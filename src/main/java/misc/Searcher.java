@@ -1,5 +1,7 @@
 package misc;
 
+import java.util.Iterator;
+
 import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
@@ -44,6 +46,7 @@ public class Searcher {
             return output;
         }
 
+        Iterator<T> iter = input.iterator();
         int t = k;
         if (k >= input.size()) {
             t = input.size();
@@ -51,11 +54,11 @@ public class Searcher {
         IPriorityQueue<T> heap = new ArrayHeap<T>();
 
         for (int i = 0; i < t; i++) {
-            heap.insert(input.get(i));
+            heap.insert(iter.next());
         }
 
         for (int i = t; i < input.size(); i++) {
-            heap.insert(input.get(i));
+            heap.insert(iter.next());
             heap.removeMin();
         }
 
