@@ -65,6 +65,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                             minChild = heap[minChildIndex];
                         }
                     }
+                    // swap with min child
                     if (heap[k].compareTo(minChild) >= 0) {
                         T newChild = heap[k];
                         heap[minChildIndex] = newChild;
@@ -110,6 +111,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             }
             k = parentIndex;
         }
+
         size++;
     }
 
@@ -141,5 +143,4 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         }
         return result;
     }
-
 }
