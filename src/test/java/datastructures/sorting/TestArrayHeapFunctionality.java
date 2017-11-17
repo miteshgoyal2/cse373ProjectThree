@@ -73,9 +73,9 @@ public class TestArrayHeapFunctionality extends BaseTest {
         try {
             for (int i = 0; i < 10000; i++) {
                 heap.insert(null);
-                fail("Expected NullPointerException");
+                fail("Expected IllegalArgumentException");
             }
-        } catch (NullPointerException ex) {
+        } catch (IllegalArgumentException ex) {
 
         }
     }
@@ -168,9 +168,9 @@ public class TestArrayHeapFunctionality extends BaseTest {
         try {
             for (int i = 0; i < 10000; i++) {
                 heap.peekMin();
-                fail("Expected NoSuchElementException");
+                fail("Expected EmptyContainerException");
             }
-        } catch (NoSuchElementException ex) {
+        } catch (EmptyContainerException ex) {
 
         }
     }
@@ -222,9 +222,9 @@ public class TestArrayHeapFunctionality extends BaseTest {
         try {
             for (int i = 0; i < 10000; i++) {
                 heap.removeMin();
-                fail("Expected NoSuchElementException");
+                fail("Expected EmptyContainerException");
             }
-        } catch (NoSuchElementException ex) {
+        } catch (EmptyContainerException ex) {
 
         }
     }

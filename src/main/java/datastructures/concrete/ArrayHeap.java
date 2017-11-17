@@ -46,7 +46,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public T removeMin() {
         if (size == 0) {
-            throw new NoSuchElementException();
+            throw new EmptyContainerException();
         } else {
             T output = this.peekMin();
             heap[0] = heap[size - 1];
@@ -83,7 +83,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public T peekMin() {
         if (size == 0) {
-            throw new NoSuchElementException();
+            throw new EmptyContainerException();
         } else {
             return heap[0];
         }
@@ -92,7 +92,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public void insert(T item) {
         if (item == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
         // resize
         resize(size + 1);
