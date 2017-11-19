@@ -39,10 +39,13 @@ public class PageRankAnalyzer {
         // on this class.
 
         // Step 1: Make a graph representing the 'internet'
+        ISet<URI> empty = new ChainedHashSet<URI>();
         IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
-        // Step 2: Use this graph to compute the page rank for each webpage
-        this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
+        IDictionary<URI, Double> linkDict = this.makeLinkDict(graph, webpages, empty);
 
+        graph = this.updateGraph(graph, empty);
+        // Step 2: Use this graph to compute the page rank for each webpage
+        this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon, linkDict);
         // Note: we don't store the graph as a field: once we've computed the
         // page ranks, we no longer need it!
     }
@@ -73,19 +76,11 @@ public class PageRankAnalyzer {
             for (URI childUri : links) {
                 // check within set and not links to itself
                 if (graph.containsKey(childUri) && !parentUri.equals(childUri)) {
-                    graph.get(parentUri).add(childUri);
+                    graph.get(childUri).add(parentUri);
                 }
             }
+
         }
-        // for (KVPair<URI, ISet<URI>> pair : graph) {
-        // String result = pair.getKey() + ">>>>> ";
-        // for (URI uri : pair.getValue()) {
-        // result += uri + " ";
-        // }
-        // result += pair.getValue().size();
-        // System.out.println(result);
-        // }
-        // System.out.println();
         return graph;
 
     }
@@ -104,7 +99,7 @@ public class PageRankAnalyzer {
      *            to prevent us from infinite looping in case our page rank never converges.
      */
     private IDictionary<URI, Double> makePageRanks(IDictionary<URI, ISet<URI>> graph, double decay, int limit,
-            double epsilon) {
+            double epsilon, IDictionary<URI, Double> linkDict) {
 
         double n = graph.size();
         double additiveTerm = (1.0 - decay) / n;
@@ -122,7 +117,7 @@ public class PageRankAnalyzer {
 
             // Step 2: The update step should go here
             for (KVPair<URI, ISet<URI>> pair : graph) {
-                double sum = calculateSum(pair.getKey(), pageRanks, graph);
+                double sum = calculateSum(pair.getKey(), pageRanks, graph, linkDict);
                 sum = sum * decay + additiveTerm;
 
                 temp.put(pair.getKey(), sum);
@@ -152,15 +147,13 @@ public class PageRankAnalyzer {
         return pageRanks.get(pageUri);
     }
 
-    private double calculateSum(URI page, IDictionary<URI, Double> pageRank, IDictionary<URI, ISet<URI>> graph) {
+    private double calculateSum(URI page, IDictionary<URI, Double> pageRank, IDictionary<URI, ISet<URI>> graph,
+            IDictionary<URI, Double> linkDict) {
 
         double output = 0.0;
-        for (KVPair<URI, ISet<URI>> pair : graph) {
-            if (pair.getValue().size() == 0 || pair.getValue().contains(page)) {
-                double n = pair.getValue().size();
-                n = (n == 0 ? graph.size() : n);
-                output += pageRank.get(pair.getKey()) / n;
-            }
+        for (URI uri : graph.get(page)) {
+            double pageRankValue = pageRank.get(uri);
+            output += pageRankValue / linkDict.get(uri);
         }
         return output;
     }
@@ -174,4 +167,40 @@ public class PageRankAnalyzer {
         }
         return true;
     }
+
+    private IDictionary<URI, Double> makeLinkDict(IDictionary<URI, ISet<URI>> graph, ISet<Webpage> webpages,
+            ISet<URI> empty) {
+
+        IDictionary<URI, Double> linkDict = new ChainedHashDictionary<URI, Double>();
+        for (Webpage page : webpages) {
+            URI parentUri = page.getUri();
+            double size = page.getLinks().size();
+            IList<URI> list = page.getLinks();
+            if (size == 0) {
+                empty.add(parentUri);
+            }
+            for (URI uri : list) {
+                if (!graph.containsKey(uri) && parentUri.equals(uri)) {
+                    size--;
+                }
+                if (size == 0) {
+                    empty.add(parentUri);
+                }
+            }
+            linkDict.put(parentUri, (size == 0 ? graph.size() : size));
+        }
+
+        return linkDict;
+    }
+
+    private IDictionary<URI, ISet<URI>> updateGraph(IDictionary<URI, ISet<URI>> graph, ISet<URI> empty) {
+
+        for (KVPair<URI, ISet<URI>> pair : graph) {
+            for (URI uri : empty) {
+                graph.get(pair.getKey()).add(uri);
+            }
+        }
+        return graph;
+    }
+
 }
