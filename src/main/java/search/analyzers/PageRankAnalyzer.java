@@ -16,7 +16,6 @@ import java.net.URI;
  */
 public class PageRankAnalyzer {
     private IDictionary<URI, Double> pageRanks;
-    private IDictionary<URI, Double> outgoingLinks;
 
     /**
      * Computes a graph representing the internet and computes the page rank of all available webpages.
@@ -41,7 +40,6 @@ public class PageRankAnalyzer {
 
         // Step 1: Make a graph representing the 'internet'
         IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
-
         // Step 2: Use this graph to compute the page rank for each webpage
         this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
 
@@ -60,7 +58,6 @@ public class PageRankAnalyzer {
      */
     private IDictionary<URI, ISet<URI>> makeGraph(ISet<Webpage> webpages) {
 
-        this.outgoingLinks = new ChainedHashDictionary<URI, Double>();
         IDictionary<URI, ISet<URI>> graph = new ChainedHashDictionary<URI, ISet<URI>>();
         for (Webpage page : webpages) {
             // add URI to graph and its value = new HashSet
@@ -72,18 +69,23 @@ public class PageRankAnalyzer {
             URI parentUri = parentPage.getUri();
             // get all URI this page links to
             IList<URI> links = parentPage.getLinks();
-            double numberOfLinks = links.size() * 1.0;
             // get each URI
             for (URI childUri : links) {
                 // check within set and not links to itself
                 if (graph.containsKey(childUri) && !parentUri.equals(childUri)) {
-                    graph.get(childUri).add(parentUri);
-                } else {
-                    numberOfLinks--;
+                    graph.get(parentUri).add(childUri);
                 }
             }
-            outgoingLinks.put(parentUri, numberOfLinks);
         }
+        // for (KVPair<URI, ISet<URI>> pair : graph) {
+        // String result = pair.getKey() + ">>>>> ";
+        // for (URI uri : pair.getValue()) {
+        // result += uri + " ";
+        // }
+        // result += pair.getValue().size();
+        // System.out.println(result);
+        // }
+        // System.out.println();
         return graph;
 
     }
@@ -104,45 +106,39 @@ public class PageRankAnalyzer {
     private IDictionary<URI, Double> makePageRanks(IDictionary<URI, ISet<URI>> graph, double decay, int limit,
             double epsilon) {
 
-        IDictionary<URI, Double> pageAndItsPageRank = new ChainedHashDictionary<URI, Double>();
+        double n = graph.size();
+        double additiveTerm = (1.0 - decay) / n;
+        IDictionary<URI, Double> pageRanks = new ChainedHashDictionary<URI, Double>();
         // Step 1: The initialize step should go here
 
+        // System.out.println(epsilon);
         for (KVPair<URI, ISet<URI>> kvPair : graph) {
             double initialPageRank = 1.0 / graph.size() * 1.0;
-            pageAndItsPageRank.put(kvPair.getKey(), initialPageRank);
+            pageRanks.put(kvPair.getKey(), initialPageRank);
         }
+
         for (int i = 0; i < limit; i++) {
+            IDictionary<URI, Double> temp = new ChainedHashDictionary<URI, Double>();
+
             // Step 2: The update step should go here
-            pageAndItsPageRank = calculateNewPageRank(pageAndItsPageRank, graph, decay);
+            for (KVPair<URI, ISet<URI>> pair : graph) {
+                double sum = calculateSum(pair.getKey(), pageRanks, graph);
+                sum = sum * decay + additiveTerm;
+
+                temp.put(pair.getKey(), sum);
+
+            }
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
-        }
 
-        return pageAndItsPageRank;
-    }
-
-    private IDictionary<URI, Double> calculateNewPageRank(IDictionary<URI, Double> pageAndItsPageRank,
-            IDictionary<URI, ISet<URI>> graph, double decay) {
-
-        double additiveTerm = (1.0 - decay) / pageAndItsPageRank.size();
-        // new pageRank
-        IDictionary<URI, Double> pageRank = new ChainedHashDictionary<URI, Double>();
-        // get the graph
-        for (KVPair<URI, ISet<URI>> pair : graph) {
-            double sum = 0;
-            for (URI uri : pair.getValue()) {
-                double l = outgoingLinks.get(uri);
-                if (l != 0) {
-                    sum += (pageAndItsPageRank.get(uri) / l);
-                } else {
-                    sum += (pageAndItsPageRank.get(uri) / pageAndItsPageRank.size());
-                }
+            if (isConverged(temp, pageRanks, epsilon)) {
+                break;
+            } else {
+                pageRanks = temp;
             }
-            sum = sum * decay + additiveTerm;
-            pageRank.put(pair.getKey(), sum);
         }
 
-        return pageRank;
+        return pageRanks;
     }
 
     /**
@@ -154,5 +150,28 @@ public class PageRankAnalyzer {
         // Implementation note: this method should be very simple: just one line!
         // TODO: Add working code here
         return pageRanks.get(pageUri);
+    }
+
+    private double calculateSum(URI page, IDictionary<URI, Double> pageRank, IDictionary<URI, ISet<URI>> graph) {
+
+        double output = 0.0;
+        for (KVPair<URI, ISet<URI>> pair : graph) {
+            if (pair.getValue().size() == 0 || pair.getValue().contains(page)) {
+                double n = pair.getValue().size();
+                n = (n == 0 ? graph.size() : n);
+                output += pageRank.get(pair.getKey()) / n;
+            }
+        }
+        return output;
+    }
+
+    private boolean isConverged(IDictionary<URI, Double> temp, IDictionary<URI, Double> pageRanks, double epsilon) {
+
+        for (KVPair<URI, Double> pair : pageRanks) {
+            if (Math.abs(temp.get(pair.getKey()) - pair.getValue()) > epsilon) {
+                return false;
+            }
+        }
+        return true;
     }
 }

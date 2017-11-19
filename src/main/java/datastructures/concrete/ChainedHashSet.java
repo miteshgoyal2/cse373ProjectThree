@@ -66,4 +66,5 @@ public class ChainedHashSet<T> implements ISet<T> {
             return iter.next().getKey();
         }
     }
+
 }
