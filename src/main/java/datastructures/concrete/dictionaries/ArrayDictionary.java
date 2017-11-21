@@ -1,16 +1,12 @@
+// Hoang Le CSE373
 package datastructures.concrete.dictionaries;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.swing.JOptionPane;
-
-import org.omg.CORBA.Current;
-
 import datastructures.concrete.KVPair;
 import datastructures.interfaces.IDictionary;
 import misc.exceptions.NoSuchKeyException;
-import misc.exceptions.NotYetImplementedException;
 
 /**
  * See IDictionary for more details on what this class should do
@@ -21,11 +17,19 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     private Pair<K, V>[] pairs;
 
     // You're encouraged to add extra fields (and helper methods) though!
-    private int numOfPairs;
+    private int size;
+    private static final int CAPACITY = 1;
 
+    // constructor
     public ArrayDictionary() {
-        numOfPairs = 0;
-        pairs = makeArrayOfPairs(4);
+        this(CAPACITY);
+    }
+
+    // default constructor
+    // set size == 0;
+    public ArrayDictionary(int capacity) {
+        pairs = makeArrayOfPairs(capacity);
+        size = 0;
     }
 
     /**
@@ -50,84 +54,117 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override
-    public V get(K key) {
 
-        for (int i = 0; i < numOfPairs; i++) {
-            if ((key == null && pairs[i].key == null) || pairs[i].key.equals(key)) {
-                return pairs[i].value;
-            }
+    public V get(K key) {
+        V result = null;
+        // check if key is in the dictionary
+        if (!this.containsKey(key)) {
+            // throw exception if not
+            throw new NoSuchKeyException();
         }
-        throw new NoSuchKeyException();
+
+        // return the value
+        result = pairs[indexOf(key)].value;
+        return result;
     }
 
     @Override
     public void put(K key, V value) {
-        boolean added = false;
-        for (int i = 0; i < pairs.length && (!added); i++) {
-            // when index has a pair
-            if (i < numOfPairs) {
-                if ((key == null && pairs[i].key == null) || (pairs[i].key != null && pairs[i].key.equals(key))) {
-                    pairs[i].value = value;
-                    added = true;
-                }
-            } else if (numOfPairs < pairs.length) {
-                // when index is null
-                pairs[i] = new Pair<K, V>(key, value);
-                numOfPairs++;
-                added = true;
-            }
+        // resize the array when there is no space left
+        remakeIfNeeded(size + 1);
+        if (this.containsKey(key)) {
+            // replace value if key exists
+            pairs[this.indexOf(key)].value = value;
+        } else {
+            // add key and value
+            pairs[size] = new Pair<K, V>(key, value);
+            // increment size
+            size++;
         }
-
-        // if dictionary is full, increase size, then put the Pair.
-        if (!added) {
-            int originalLength = pairs.length;
-            doubleTheSize();
-            pairs[originalLength] = new Pair<K, V>(key, value);
-            numOfPairs++;
-        }
-    }
-
-    public void doubleTheSize() {
-        Pair<K, V>[] biggerArray = makeArrayOfPairs(pairs.length * 2);
-        for (int i = 0; i < pairs.length; i++) {
-            biggerArray[i] = pairs[i];
-        }
-        pairs = biggerArray;
     }
 
     @Override
     public V remove(K key) {
-        for (int i = 0; i < numOfPairs; i++) {
-            if ((key == null && pairs[i].key == null) || pairs[i].key.equals(key)) {
-                V value = pairs[i].value;
-                deleteAndShift(i);
-                return value;
+        V result = null;
+        int indexAtRemoval = 0;
+        if (!this.containsKey(key)) {
+            // if no key in dictionary throw exception
+            throw new NoSuchKeyException();
+        } else {
+            // get index before perform remove();
+            indexAtRemoval = indexOf(key);
+            result = pairs[indexAtRemoval].value;
+            // loop through dictionary and shift left
+            for (int i = indexAtRemoval; i < size - 1; i++) {
+                pairs[i] = pairs[i + 1];
             }
         }
-        throw new NoSuchKeyException();
-    }
-
-    public void deleteAndShift(int index) {
-        // shifting the elements
-        for (int i = index; i < numOfPairs - 1; i++) {
-            pairs[i] = pairs[i + 1];
-        }
-        pairs[numOfPairs - 1] = null;
-        numOfPairs--;
+        // decrement size
+        size--;
+        return result;
     }
 
     @Override
     public boolean containsKey(K key) {
-        for (int i = 0; i < numOfPairs; i++) {
-            if ((key == null && pairs[i].key == null) || pairs[i].key.equals(key))
-                return true;
-        }
-        return false;
+        // indexOf(key) == 1 means key doesn't exist return false;
+        // else return true
+        return indexOf(key) != -1;
     }
 
     @Override
     public int size() {
-        return numOfPairs;
+        return size;
+    }
+
+    // helper methods
+    public int indexOf(K key) {
+        for (int i = 0; i < size; i++) {
+            // check null key to use "==" instead of equals()
+            if (isNull(key)) {
+                if (pairs[i].key == null) {
+                    return i;
+                }
+            } else {
+                // if not null key use equals() to compare
+                if (pairs[i].key != null && pairs[i].key.equals(key)) {
+                    return i;
+                }
+            }
+        }
+        // return -1 if key is not in dictionary
+        return -1;
+    }
+
+    // check null key
+    private boolean isNull(K key) {
+        return key == null;
+    }
+
+    // resize dictionary
+    public void remakeIfNeeded(int capacity) {
+        // if capacity > current length, then resize
+        if (capacity > pairs.length) {
+            // new size
+            int newCapacity = pairs.length * 2 + 1;
+
+            // new array
+            Pair<K, V>[] newPairs = makeArrayOfPairs(newCapacity);
+            // copy keys and values from old array to new one
+            for (int i = 0; i < pairs.length; i++) {
+                newPairs[i] = pairs[i];
+            }
+            // assign new array to pairs
+            pairs = newPairs;
+        }
+    }
+
+    // toString() used for debugging
+    public String toString() {
+        String string = "";
+        for (int i = 0; i < size; i++) {
+            string += pairs[i] + " ";
+        }
+        return string;
     }
 
     private static class Pair<K, V> {
@@ -146,48 +183,44 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         }
     }
 
-    public Iterator<KVPair<K, V>> iterator() {
-        return new ArrayDictionaryIterator(pairs);
-    }
+    private static class ArrayDictionaryIterator<K, V> implements Iterator<KVPair<K, V>> {
 
-    private class ArrayDictionaryIterator implements Iterator<KVPair<K, V>> {
+        private KVPair<K, V>[] pairs;
+        int index = -1;
+        int size = 0;
 
-        private Pair<K, V> current;
-        private int index;
+        @SuppressWarnings("unchecked")
+        public ArrayDictionaryIterator(Pair<K, V>[] pairs2, int size) {
+            this.size = size;
+            pairs = (KVPair<K, V>[]) (new KVPair[pairs2.length]);
+            for (int i = 0; i < size; i++) {
+                K key = pairs2[i].key;
+                V value = pairs2[i].value;
+                pairs[i] = new KVPair<K, V>(key, value);
+            }
+        }
 
-        public ArrayDictionaryIterator(Pair[] pairs) {
-            index = 0; // start from the first element.
-            current = pairs[index];
+        public boolean hasNext() {
+            if (size == 0) {
+                return false;
+            }
+            return index + 1 < size;
 
         }
 
         public KVPair<K, V> next() {
-            if (!hasNext())
+
+            if (!hasNext()) {
                 throw new NoSuchElementException();
-            K key = current.key;
-            V value = current.value;
-            if (pairs.length > index + 1) {
-                current = pairs[++index];
-            } else {
-                current = null;
             }
-            return new KVPair<K, V>(key, value);
-
+            index++;
+            return pairs[index];
         }
 
-        public boolean hasNext() {
-            if (current == null || (current.key == null && current.value == null)) {
-                return false;
-            }
-            return true;
-        }
+    }
 
-        public K getKey() {
-            return current.key;
-        }
+    public Iterator<KVPair<K, V>> iterator() {
 
-        public V getValue() {
-            return current.value;
-        }
+        return new ArrayDictionaryIterator<>(this.pairs, size);
     }
 }
