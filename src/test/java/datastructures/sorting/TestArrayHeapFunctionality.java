@@ -1,11 +1,8 @@
 // Hoang Le + Mitesh Goyal
 package datastructures.sorting;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 
 import misc.BaseTest;
@@ -76,7 +73,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
                 fail("Expected IllegalArgumentException");
             }
         } catch (IllegalArgumentException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
     }
 
@@ -171,7 +168,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
                 fail("Expected EmptyContainerException");
             }
         } catch (EmptyContainerException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
     }
 
@@ -225,7 +222,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
                 fail("Expected EmptyContainerException");
             }
         } catch (EmptyContainerException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
     }
 

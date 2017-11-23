@@ -1,6 +1,7 @@
 package datastructures.concrete;
 
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
+import datastructures.concrete.dictionaries.InsertionPreservingDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NoSuchKeyException;
@@ -16,7 +17,7 @@ public class ChainedHashSet<T> implements ISet<T> {
     private IDictionary<T, Boolean> map;
 
     public ChainedHashSet() {
-        this.map = new ChainedHashDictionary<>();
+        this.map = new InsertionPreservingDictionary<>();
     }
 
     @Override

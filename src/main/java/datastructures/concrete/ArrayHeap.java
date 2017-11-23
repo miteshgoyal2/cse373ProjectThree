@@ -3,10 +3,6 @@ package datastructures.concrete;
 
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
-import misc.exceptions.NotYetImplementedException;
-
-import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 /**
  * See IPriorityQueue for details on what each method must do.
@@ -34,13 +30,13 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
      * Note that each element in the array will initially be null.
      */
     @SuppressWarnings("unchecked")
-    private T[] makeArrayOfT(int size) {
+    private T[] makeArrayOfT(int capacity) {
         // This helper method is basically the same one we gave you
         // in ArrayDictionary and ChainedHashDictionary.
         //
         // As before, you do not need to understand how this method
         // works, and should not modify it in any way.
-        return (T[]) (new Comparable[size]);
+        return (T[]) (new Comparable[capacity]);
     }
 
     @Override

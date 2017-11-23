@@ -8,7 +8,7 @@ import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.InsertionPreservingDictionary;
 import datastructures.interfaces.IDictionary;
 
-public class TestInsertionPreservingDictionary extends TestDictionary {
+public class TestInsertionPreservingDictionary extends TestChainedHashDictionary {
 
     protected <K, V> IDictionary<K, V> newDictionary() {
         return new InsertionPreservingDictionary<>();
@@ -110,6 +110,30 @@ public class TestInsertionPreservingDictionary extends TestDictionary {
         for (KVPair<Integer, Integer> pair : dict) {
             assertEquals(i, pair.getKey());
             assertEquals(i, dict.remove(i));
+            i++;
+        }
+
+    }
+
+    @Test(timeout = SECOND)
+    public void testInsertionPreservingAfterRemoveAndInsert2() {
+        IDictionary<Integer, String> dict = this.newDictionary();
+
+        for (int i = 0; i < 500; i++) {
+            dict.put(i, "" + i);
+        }
+
+        for (int i = 0; i < 500; i++) {
+            dict.remove(i);
+        }
+
+        for (int i = 0; i < 1000; i++) {
+            dict.put(i, "" + i);
+        }
+
+        int i = 0;
+        for (KVPair<Integer, String> pair : dict) {
+            assertEquals(i, pair.getKey());
             i++;
         }
 

@@ -103,7 +103,7 @@ public class PageRankAnalyzer {
 
         double n = graph.size();
         double additiveTerm = (1.0 - decay) / n;
-        IDictionary<URI, Double> pageRanks = new ChainedHashDictionary<URI, Double>();
+        pageRanks = new ChainedHashDictionary<URI, Double>();
         // Step 1: The initialize step should go here
 
         // System.out.println(epsilon);
@@ -125,14 +125,12 @@ public class PageRankAnalyzer {
             }
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
-
             if (isConverged(temp, pageRanks, epsilon)) {
                 break;
             } else {
                 pageRanks = temp;
             }
         }
-
         return pageRanks;
     }
 
@@ -143,7 +141,6 @@ public class PageRankAnalyzer {
      */
     public double computePageRank(URI pageUri) {
         // Implementation note: this method should be very simple: just one line!
-        // TODO: Add working code here
         return pageRanks.get(pageUri);
     }
 
@@ -158,7 +155,7 @@ public class PageRankAnalyzer {
         return output;
     }
 
-    private boolean isConverged(IDictionary<URI, Double> temp, IDictionary<URI, Double> pageRanks, double epsilon) {
+    private boolean isConverged(IDictionary<URI, Double> temp, IDictionary<URI, Double> pageRank, double epsilon) {
 
         for (KVPair<URI, Double> pair : pageRanks) {
             if (Math.abs(temp.get(pair.getKey()) - pair.getValue()) > epsilon) {

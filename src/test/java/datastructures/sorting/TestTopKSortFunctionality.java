@@ -6,12 +6,11 @@ import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 import misc.Searcher;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -47,7 +46,7 @@ public class TestTopKSortFunctionality extends BaseTest {
                 fail("Expect IllegalArgumentException");
             }
         } catch (IllegalArgumentException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
     }
 
@@ -190,7 +189,7 @@ public class TestTopKSortFunctionality extends BaseTest {
             IList<String> top = Searcher.topKSort(5, list);
             fail("Expect IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
     }
 

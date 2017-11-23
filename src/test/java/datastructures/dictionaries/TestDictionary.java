@@ -39,60 +39,40 @@ public abstract class TestDictionary extends BaseTest {
             V value = expectedValues[i];
             try {
                 V actualValue = actual.get(key);
-                assertEquals(
-                        String.format(
-                                "Dictionary contains key-value pair '%s' => '%s'; expected value '%s'",
-                                key,
-                                value,
-                                actualValue),
-                        value,
-                        actualValue);
+                assertEquals(String.format("Dictionary contains key-value pair '%s' => '%s'; expected value '%s'", key,
+                        value, actualValue), value, actualValue);
             } catch (NoSuchKeyException ex) {
-                String message = String.format(
-                        "Expected key '%s' was missing from dictionary",
-                        key);
+                String message = String.format("Expected key '%s' was missing from dictionary", key);
                 throw new AssertionError(message, ex);
             }
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testPutAndGetBasic() {
         IDictionary<String, String> dict = this.makeBasicDictionary();
 
-        this.assertDictMatches(
-                new String[] {"keyA", "keyB", "keyC"},
-                new String[] {"valA", "valB", "valC"},
-                dict);
+        this.assertDictMatches(new String[] { "keyA", "keyB", "keyC" }, new String[] { "valA", "valB", "valC" }, dict);
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testPutAndGetSameKeyRepeated() {
         IDictionary<Integer, Integer> dict = this.newDictionary();
 
         // First insertion
         dict.put(3, 4);
-        this.assertDictMatches(
-                new Integer[] {3},
-                new Integer[] {4},
-                dict);
+        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 4 }, dict);
 
         // Second insertion
         dict.put(3, 5);
-        this.assertDictMatches(
-                new Integer[] {3},
-                new Integer[] {5},
-                dict);
+        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 5 }, dict);
 
         // Third insertion
         dict.put(3, 4);
-        this.assertDictMatches(
-                new Integer[] {3},
-                new Integer[] {4},
-                dict);
+        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 4 }, dict);
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testPutAndGetSameKeyRepeatedMany() {
         IDictionary<String, String> dict = this.newDictionary();
         dict.put("a", "1");
@@ -103,13 +83,10 @@ public abstract class TestDictionary extends BaseTest {
         dict.put("a", "4");
         dict.put("c", "2");
 
-        this.assertDictMatches(
-                new String[] {"a", "b", "c"},
-                new String[] {"4", "1", "2"},
-                dict);
+        this.assertDictMatches(new String[] { "a", "b", "c" }, new String[] { "4", "1", "2" }, dict);
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testGetErrorHandling() {
         IDictionary<String, Integer> dict = this.newDictionary();
 
@@ -131,7 +108,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=10 * SECOND)
+    @Test(timeout = 10 * SECOND)
     public void testPutAndGetMany() {
         IDictionary<Integer, Integer> dict = this.newDictionary();
         int cap = 10000;
@@ -149,30 +126,21 @@ public abstract class TestDictionary extends BaseTest {
         assertFalse(dict.isEmpty());
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testRemoveBasic() {
         IDictionary<String, String> dict = this.makeBasicDictionary();
 
         assertEquals("valB", dict.remove("keyB"));
-        this.assertDictMatches(
-                new String[] {"keyA", "keyC"},
-                new String[] {"valA", "valC"},
-                dict);
+        this.assertDictMatches(new String[] { "keyA", "keyC" }, new String[] { "valA", "valC" }, dict);
 
         assertEquals("valA", dict.remove("keyA"));
-        this.assertDictMatches(
-                new String[] {"keyC"},
-                new String[] {"valC"},
-                dict);
+        this.assertDictMatches(new String[] { "keyC" }, new String[] { "valC" }, dict);
 
         assertEquals("valC", dict.remove("keyC"));
-        this.assertDictMatches(
-                new String[] {},
-                new String[] {},
-                dict);
+        this.assertDictMatches(new String[] {}, new String[] {}, dict);
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testRemoveDuplicate() {
         IDictionary<String, String> dict = this.newDictionary();
         dict.put("a", "1");
@@ -182,26 +150,17 @@ public abstract class TestDictionary extends BaseTest {
         dict.put("d", "5");
         dict.put("b", "6");
 
-        this.assertDictMatches(
-                new String[] {"a", "b", "c", "d"},
-                new String[] {"4", "6", "3", "5"},
-                dict);
+        this.assertDictMatches(new String[] { "a", "b", "c", "d" }, new String[] { "4", "6", "3", "5" }, dict);
 
         assertEquals("4", dict.remove("a"));
-        this.assertDictMatches(
-                new String[] {"b", "c", "d"},
-                new String[] {"6", "3", "5"},
-                dict);
+        this.assertDictMatches(new String[] { "b", "c", "d" }, new String[] { "6", "3", "5" }, dict);
 
         assertEquals("6", dict.remove("b"));
-        this.assertDictMatches(
-                new String[] {"c", "d"},
-                new String[] {"3", "5"},
-                dict);
+        this.assertDictMatches(new String[] { "c", "d" }, new String[] { "3", "5" }, dict);
 
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testRemoveErrorHandling() {
         IDictionary<Integer, String> list = this.newDictionary();
         list.put(3, "a");
@@ -223,8 +182,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-
-    @Test(timeout=5 * SECOND)
+    @Test(timeout = 5 * SECOND)
     public void testAddGetMany() {
         int cap = 15000;
         IDictionary<Integer, Integer> dict = this.newDictionary();
@@ -241,7 +199,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testContainsKeyBasic() {
         IDictionary<String, Integer> dict = this.newDictionary();
 
@@ -262,7 +220,7 @@ public abstract class TestDictionary extends BaseTest {
         assertFalse(dict.containsKey("e"));
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testLargeKeys() {
         // Force keys to be two separate objects
         String key1 = "abcdefghijklmnopqrstuvwxyz";
@@ -283,7 +241,7 @@ public abstract class TestDictionary extends BaseTest {
         assertFalse(dict.containsKey(key2));
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testNullKey() {
         IDictionary<String, String> dict = this.makeBasicDictionary();
 
@@ -297,7 +255,7 @@ public abstract class TestDictionary extends BaseTest {
         assertFalse(dict.containsKey(null));
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testNonNullKeys() {
         IDictionary<Wrapper<String>, String> dict = this.newDictionary();
         dict.put(new Wrapper<>("foo"), "foo");
@@ -313,7 +271,7 @@ public abstract class TestDictionary extends BaseTest {
         assertEquals("hello", dict.get(new Wrapper<>("foo")));
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testGetMany() {
         IDictionary<String, String> dict = this.makeBasicDictionary();
         int cap = 100000;
@@ -327,7 +285,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIterator() {
         IDictionary<String, Integer> dict = this.newDictionary();
         IDictionary<String, Integer> copy = this.newDictionary();
@@ -348,7 +306,7 @@ public abstract class TestDictionary extends BaseTest {
         assertTrue(copy.isEmpty());
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorUnusualKeys() {
         IDictionary<String, String> map = this.newDictionary();
 
@@ -375,7 +333,7 @@ public abstract class TestDictionary extends BaseTest {
         assertTrue(metEmptyKey);
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorEndsCorrectly() {
         IDictionary<String, String> dict = this.makeBasicDictionary();
 
@@ -400,7 +358,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorsAreIndependent() {
         IDictionary<String, String> dict = makeBasicDictionary();
         Iterator<KVPair<String, String>> iter1 = dict.iterator();
@@ -430,7 +388,7 @@ public abstract class TestDictionary extends BaseTest {
         assertFalse(iter4.hasNext());
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorOverEmptyDictionary() {
         IDictionary<String, String> dict = this.newDictionary();
 
@@ -450,7 +408,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorOverDictionaryWithOneElement() {
         IDictionary<String, String> dict = this.newDictionary();
         dict.put("foo", "bar");
@@ -478,7 +436,7 @@ public abstract class TestDictionary extends BaseTest {
         }
     }
 
-    @Test(timeout=SECOND)
+    @Test(timeout = SECOND)
     public void testIteratorRunsMultipleTimes() {
         IDictionary<String, String> dict = this.newDictionary();
         for (int i = 0; i < 100; i++) {

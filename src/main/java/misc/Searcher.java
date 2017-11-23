@@ -7,7 +7,6 @@ import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
-import misc.exceptions.NotYetImplementedException;
 
 public class Searcher {
     /**

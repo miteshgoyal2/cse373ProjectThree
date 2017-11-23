@@ -12,7 +12,8 @@ import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,6 @@ import java.util.PriorityQueue;
 public class TestSortingStress extends BaseTest {
     @Test(timeout = 10 * SECOND)
     public void testPlaceholder() {
-        // TODO: replace this placeholder with actual code
         assertTrue(true);
     }
 
@@ -61,7 +61,7 @@ public class TestSortingStress extends BaseTest {
         }
     }
 
-    @Test(timeout = 1 * SECOND)
+    @Test(timeout = SECOND)
     public void stressTestTopKSort() {
 
         IList<String> input = new DoubleLinkedList<String>();
@@ -74,12 +74,10 @@ public class TestSortingStress extends BaseTest {
         Collections.sort(utilList);
         IList<String> output = new DoubleLinkedList<String>();
         try {
-            for (int i = -1000000; i < 0; i++) {
-                output = Searcher.topKSort(i, input);
-                fail("Expected IllegalArgumentException");
-            }
+            output = Searcher.topKSort(-1, input);
+            fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
-
+            //System.out.println("Caught exception: " + ex.getMessage());
         }
 
         output = Searcher.topKSort(5000, input);

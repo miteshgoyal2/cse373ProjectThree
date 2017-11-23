@@ -60,7 +60,7 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
             contents[index].value = value;
         } else {
             contents[contentPointer] = new Pair<K, V>(key, value);
-            // contents[contentPointer].isEmpty = false;
+            contents[contentPointer].isEmpty = false;
             int index = findEmptyCell(key, hashFunction1(key));
             indices[index] = contentPointer;
             contentPointer++;
@@ -79,7 +79,11 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
         contents[index].isEmpty = true;
         indices[indicesIndexOf(key)] = -1;
         size--;
+        if (size == 0) {
+            makeEmpty();
+        }
         return output;
+
     }
 
     @Override
@@ -154,6 +158,13 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
                 put(oldContents[i].key, oldContents[i].value);
             }
         }
+    }
+
+    private void makeEmpty() {
+        size = 0;
+        contentPointer = 0;
+        contents = makeArrayOfPairs(capacity);
+        indices = makeArrayOfInt(capacity);
     }
 
     private double loadFactor() {
