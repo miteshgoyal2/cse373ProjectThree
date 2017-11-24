@@ -1,3 +1,4 @@
+// Hoang Le + Mitesh Goyal
 package search.analyzers;
 
 import datastructures.concrete.KVPair;
@@ -39,7 +40,7 @@ public class TfIdfAnalyzer {
         //
         // You should uncomment these lines when you're ready to begin working
         // on this class.
-
+        
         this.tfScores = new ChainedHashDictionary<Webpage, IDictionary<String, Double>>();
         for (Webpage page : webpages) {
             IDictionary<String, Double> thisPageTfScores = this.computeTfScores(page.getWords());

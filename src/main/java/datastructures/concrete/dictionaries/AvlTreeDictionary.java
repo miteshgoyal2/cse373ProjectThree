@@ -39,6 +39,9 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 
     @Override
     public void put(K key, V value) {
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
         overallRoot = put(key, value, overallRoot);
     }
 
@@ -65,6 +68,7 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
     public V remove(K key) {
         V output = this.get(key);
         overallRoot = remove(key, overallRoot);
+        size--;
         return output;
     }
 
@@ -89,7 +93,6 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
                 return root.right;
             }
         }
-        size--;
         root.height = Math.max(height(root.left), height(root.right)) + 1;
         root = validate(root);
         return root;
@@ -211,7 +214,11 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
         return newRoot;
     }
 
-    private static class AvlTreeNode<K, V> {
+    public AvlTreeNode<K, V> getRoot() {
+        return this.overallRoot;
+    }
+
+    private static class AvlTreeNode<K extends Comparable<K>, V> {
 
         public K key;
         public V value;
