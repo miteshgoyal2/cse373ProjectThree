@@ -1,0 +1,59 @@
+1. IDictionary variants: preserving insertion order
+
+I picked double hashing as my probing strategy because linear probing and quadratic probing could easily produce primary and secondary clustering. As the hash table gets larger, searching for a key-value pair using linear and quadratic probing is not advisable. I chose prime numbers for hash table size and second hash function so that data is evenly distributed. For example, if the hash table size is 11, my hash functions should look like this:
+Hash1 : key.hashCode() % 11;
+Hash2 : 7 –  (key.hashCode() % 7) because 7 is the largest prime number that is smaller than 11.
+As the table size changes, my hash2 changes accordingly. I used 0.4 as load factor because the lecture indicated that the best load factor for double hashing was between 0.25 and 0.5.
+For O(1) deletion, I implemented lazy deletion instead of actually deleting a key-value pair so that I didn’t need to worry about shifting elements around. I created my own KVPair and added a Boolean property. If a cell in contents array is unoccupied or removed, I set the Boolean property to ‘true’. When iterating over the dictionary, I simply yield elements that are ‘false.’ After each rehash, I get rid of removed elements so that I have more space to insert new elements.
+
+2. IDictionary variants: preserving sorted order
+
+For right-right and left-left single rotation
+Single rotation
+        a                         b
+         \                       / \
+          b         ——>         a   c 
+           \
+            c
+b becomes the new root
+b’s left child becomes right subtree of a
+a becomes left subtree of b
+
+For right-left and left-right double rotation
+Double rotation
+        a
+         \
+          b
+         /
+        c
+
+In this case, I perform a single rotation on a’s right subtree
+a’s right subtree before single rotation
+        b
+       /
+      c
+
+a’s right subtree after single rotation
+      b
+       \
+        c
+
+This is how a look like after the first single rotation
+      a
+       \
+        b
+         \
+          c
+
+Then I perform another single rotation on a
+The result:
+       b
+      / \
+     a   c
+
+
+For iteration
+I created an array and performed an In Order Traversal and added nodes that I visited to the array. The array was sorted in ascending order because in order traversal yields keys in ascending order.
+
+I tested the correctness of my avl tree by writing a toString that returned a string representing the sideways tree and using avl visualization in the lecture to compare.
+
