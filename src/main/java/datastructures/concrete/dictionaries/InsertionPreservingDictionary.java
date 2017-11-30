@@ -25,7 +25,7 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
         primeVal = getPrimeForHash2();
     }
 
-    private int[] makeArrayOfInt(int size) {
+    private int[] makeArrayOfInt(int value) {
         int[] output = new int[size];
         for (int i = 0; i < size; i++) {
             output[i] = -2;

@@ -61,15 +61,15 @@ public abstract class TestSortedDictionary extends BaseTest {
 
         // First insertion
         dict.put(3, 4);
-        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 4 }, dict);
+        this.assertDictMatches(new Integer[] {3}, new Integer[] {4}, dict);
 
         // Second insertion
         dict.put(3, 5);
-        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 5 }, dict);
+        this.assertDictMatches(new Integer[] {3}, new Integer[] {5}, dict);
 
         // Third insertion
         dict.put(3, 4);
-        this.assertDictMatches(new Integer[] { 3 }, new Integer[] { 4 }, dict);
+        this.assertDictMatches(new Integer[] {3}, new Integer[] {4}, dict);
     }
 
     @Test(timeout = SECOND)
@@ -83,7 +83,7 @@ public abstract class TestSortedDictionary extends BaseTest {
         dict.put("a", "4");
         dict.put("c", "2");
 
-        this.assertDictMatches(new String[] { "a", "b", "c" }, new String[] { "4", "1", "2" }, dict);
+        this.assertDictMatches(new String[] {"a", "b", "c"}, new String[] {"4", "1", "2"}, dict);
     }
 
     @Test(timeout = SECOND)
