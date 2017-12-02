@@ -17,7 +17,7 @@ public class ChainedHashSet<T> implements ISet<T> {
     private IDictionary<T, Boolean> map;
 
     public ChainedHashSet() {
-        this.map = new InsertionPreservingDictionary<>();
+        this.map = new ChainedHashDictionary<>();
     }
 
     @Override

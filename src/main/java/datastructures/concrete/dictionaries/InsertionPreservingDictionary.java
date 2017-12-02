@@ -26,8 +26,8 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
     }
 
     private int[] makeArrayOfInt(int value) {
-        int[] output = new int[size];
-        for (int i = 0; i < size; i++) {
+        int[] output = new int[value];
+        for (int i = 0; i < value; i++) {
             output[i] = -2;
         }
         return output;
